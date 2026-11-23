@@ -39,8 +39,8 @@
       <h2 id="journal-entry-title">${profile ? "野外观察" : "馆藏记录"}</h2>
       ${lead ? `<p class="journal-lead">${escape(lead)}</p>` : ""}
       <div class="journal-entry-layout${inlinePhoto ? " has-field-photo" : ""}">
-        ${rows ? `<dl class="journal-facts">${rows}</dl>` : ""}
         ${inlinePhoto}
+        ${rows ? `<dl class="journal-facts">${rows}</dl>` : ""}
       </div>
       ${profile?.fieldNote ? `<div class="journal-field-note"><h3>${pencil}观察提示</h3><p>${escape(profile.fieldNote)}</p></div>` : ""}
       ${profile?.sources?.length ? `<details class="journal-sources">
@@ -80,16 +80,14 @@
       <summary>观察索引</summary>
       <nav aria-label="观察专题">${indexLinks.map(item => `<a href="${escape(item.href)}"${item.id === record.id ? ' aria-current="page"' : ""}>${escape(item.title)}</a>`).join("")}</nav>
     </details>` : "";
-    return `<header class="journal-header">
-      <div class="journal-room-name"><span class="journal-room-mark" aria-hidden="true"></span><span>自然手账</span></div>
-      ${toolsHTML}
-    </header>
-    <div class="journal-controls">
-      ${index}
-      <div class="journal-navigation" aria-label="标本 ${page} / ${total}">${navigationHTML}</div>
-    </div>
-    <div class="journal-volume">
+    return `<div class="journal-volume">
       <article class="journal-spread" data-exhibit="${escape(record.id)}" aria-label="自然手账">
+        <header class="journal-header">
+          <div class="journal-room-name"><span class="journal-room-mark" aria-hidden="true"></span><span>自然手账</span></div>
+          ${index}
+          ${toolsHTML}
+          <div class="journal-navigation" aria-label="标本 ${page} / ${total}">${navigationHTML}</div>
+        </header>
         <div class="journal-page journal-left">
           <header class="journal-entry-heading">
             ${view ? `<p class="journal-view">${escape(view)}</p>` : ""}
@@ -119,12 +117,14 @@
             </a>
           </footer>`}
         </div>
+        <footer class="journal-colophon">
+          ${photos.length ? `<details class="journal-field-appendix">
+            <summary><span>野外图录</span><span>${photos.length} 张</span>${chevron}</summary>
+            <div class="journal-field-photos">${photos.join("")}</div>
+          </details>` : ""}
+          <a class="greenhouse-credit" href="conservatory/index.html" target="_blank" rel="noopener">温室布景出处</a>
+        </footer>
       </article>
-      ${photos.length ? `<details class="journal-field-appendix">
-        <summary><span>野外图录</span><span>${photos.length} 张</span>${chevron}</summary>
-        <div class="journal-field-photos">${photos.join("")}</div>
-      </details>` : ""}
-    </div>
-    <p class="greenhouse-credit"><a href="conservatory/index.html" target="_blank" rel="noopener">温室布景出处</a></p>`;
+    </div>`;
   };
 })();
