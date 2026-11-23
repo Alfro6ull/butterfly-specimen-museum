@@ -1,0 +1,140 @@
+/* The glasshouse is mounted behind the journal and its colour reader. */
+body.journal-open[data-hall="journal"] {
+  --greenhouse-top:72px;
+  --desk-width:min(83vw,1120px);
+  isolation:isolate;
+  background:#374d38;
+}
+.journal-greenhouse {
+  position:fixed;
+  inset:var(--greenhouse-top) 0 0;
+  z-index:-1;
+  overflow:hidden;
+  pointer-events:none;
+  user-select:none;
+  background:#4e6b4d;
+}
+.journal-greenhouse::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:url("../conservatory/glasshouse.webp") center 48% / cover no-repeat;
+  filter:saturate(.78) brightness(.84);
+}
+.journal-greenhouse::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,#163a2824,transparent 29%,transparent 56%,#12392952);
+}
+.journal-greenhouse span {
+  position:absolute;
+  z-index:1;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:contain;
+  filter:saturate(.86) brightness(.83) drop-shadow(1px 6px 5px #152a1b69);
+}
+.journal-greenhouse .canopy-palm {
+  width:clamp(330px,33vw,570px);
+  aspect-ratio:799/940;
+  left:clamp(-178px,-10vw,-76px);
+  top:clamp(-400px,-23vw,-185px);
+  transform:rotate(147deg);
+  background-image:url("../conservatory/palm.webp");
+}
+.journal-greenhouse .canopy-fern {
+  width:clamp(225px,25vw,410px);
+  aspect-ratio:563/820;
+  right:clamp(-118px,-5.5vw,-38px);
+  top:clamp(-282px,-15.5vw,-132px);
+  transform:rotate(-142deg);
+  background-image:url("../conservatory/fern.webp");
+}
+.journal-greenhouse .bench-taro {
+  width:clamp(188px,19vw,325px);
+  aspect-ratio:461/770;
+  left:clamp(-120px,-6.7vw,-46px);
+  bottom:clamp(-195px,-11vw,-88px);
+  transform:rotate(-12deg);
+  background-image:url("../conservatory/taro.webp");
+}
+.journal-greenhouse .bench-orchid {
+  width:clamp(190px,18vw,307px);
+  aspect-ratio:718/850;
+  right:clamp(-94px,-4.8vw,-35px);
+  bottom:clamp(-112px,-5.7vw,-42px);
+  transform:rotate(-13deg);
+  background-image:url("../conservatory/orchid.webp");
+}
+body.journal-open .journal-wall {
+  --journal-width:var(--desk-width);
+  padding:clamp(6px,1.3vh,15px) 0 0;
+  background:transparent;
+}
+body.journal-open .journal-wall::before { content:none }
+body.journal-open .journal-room-name {
+  padding:8px 12px 9px;
+  border:1px solid #e1dfb283;
+  border-radius:2px;
+  color:#fff8dd;
+  background:#233e30ed;
+  box-shadow:0 2px 6px #15251a3b;
+}
+body.journal-open .journal-room-mark {
+  border-color:#e4e6c9;
+  background:linear-gradient(90deg,transparent 47%,#e4e6c9 47% 53%,transparent 53%);
+  box-shadow:0 2px 0 -1px #314534,0 3px 0 -1px #e4e6c9;
+}
+body.journal-open .journal-header .room-tools,
+body.journal-open .journal-index summary,
+body.journal-open .journal-navigation {
+  background:#f0efdfed;
+  border:1px solid #506149b3;
+  box-shadow:0 2px 6px #192a1e36;
+}
+body.journal-open .journal-navigation { border-radius:3px;padding:2px }
+body.journal-open .journal-navigation .walk .arrow { background:transparent;border-color:#78877180 }
+body.journal-open .journal-navigation .walk .page { color:#2d4534 }
+body.journal-open .greenhouse-credit { margin:22px auto 28px;text-align:center }
+body.journal-open .greenhouse-credit a {
+  display:inline-block;
+  padding:6px 10px;
+  border:1px solid #dce0bc6b;
+  border-radius:2px;
+  background:#203a2ce8;
+  color:#f2edda;
+  font:12px/1.5 var(--ui);
+  text-underline-offset:3px;
+}
+body.journal-open[data-hall="journal"] .study {
+  width:var(--desk-width);
+  margin:clamp(36px,6svh,68px) auto;
+  padding:clamp(24px,3.8vw,60px);
+  min-height:calc(100svh - var(--greenhouse-top) - 12svh);
+  gap:clamp(24px,3vw,56px);
+  border:1px solid #b2aa8e;
+  border-radius:4px;
+  box-shadow:0 2px 0 #b1a68c,0 6px 0 #4e6048,0 14px 28px #17281b61;
+}
+@media(max-width:740px) {
+  body.journal-open[data-hall="journal"] { --desk-width:min(calc(100% - clamp(36px,11vw,72px)),570px) }
+  body.journal-open .journal-room-name { padding:6px 8px }
+  body.journal-open .journal-header { flex-wrap:wrap }
+  body.journal-open .journal-header .room-tools { margin-inline-start:auto }
+  body.journal-open[data-hall="journal"] .study { padding:clamp(15px,4vw,29px);gap:22px }
+}
+@media(max-width:700px) {
+  body.journal-open[data-hall="journal"] { --greenhouse-top:58px }
+}
+@media(max-width:520px) {
+  .journal-greenhouse::before { background-position:53% 45% }
+  .journal-greenhouse .canopy-palm { width:241px;left:-86px;top:-161px }
+  .journal-greenhouse .canopy-fern { width:167px;right:-46px;top:-105px }
+  .journal-greenhouse .bench-taro { width:145px;left:-72px;bottom:-38px }
+  .journal-greenhouse .bench-orchid { width:142px;right:-65px;bottom:-21px }
+  body.journal-open .greenhouse-credit { margin:22px auto 27px }
+}
+@media(forced-colors:active) {
+  .journal-greenhouse { visibility:hidden }
+}

@@ -124,6 +124,7 @@
         <summary><span>野外图录</span><span>${photos.length} 张</span>${chevron}</summary>
         <div class="journal-field-photos">${photos.join("")}</div>
       </details>` : ""}
-    </div>`;
+    </div>
+    <p class="greenhouse-credit"><a href="conservatory/index.html" target="_blank" rel="noopener">温室布景出处</a></p>`;
   };
 })();

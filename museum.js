@@ -4,6 +4,10 @@
   const main = document.querySelector("#museum");
   const galleryLink = document.querySelector("#gallery-link");
   const bookLink = document.querySelector("#book-link");
+  const greenhouse = document.createElement("div");
+  greenhouse.className = "journal-greenhouse";
+  greenhouse.setAttribute("aria-hidden", "true");
+  greenhouse.innerHTML = '<span class="canopy-palm"></span><span class="canopy-fern"></span><span class="bench-taro"></span><span class="bench-orchid"></span>';
   const data = window.MUSEUM_DATA;
 
   if (!data?.records?.length || !data.galleryOrder?.length) {
@@ -122,7 +126,10 @@
     bookLink.href = fragment("book", bookRecord.id, route.mode === "study" || route.mode === "plaque" ? route.photoIndex : null, wallId);
     const light = route.mode === "book";
     document.body.classList.toggle("light", light);
-    document.body.classList.toggle("journal-open", hall === "journal" && !light);
+    const inJournal = hall === "journal" && !light;
+    document.body.classList.toggle("journal-open", inJournal);
+    if (inJournal && !greenhouse.isConnected) main.before(greenhouse);
+    if (!inJournal && greenhouse.isConnected) greenhouse.remove();
     for (const [link, current] of [[galleryLink, !light], [bookLink, light]]) {
       link.classList.toggle("on", current);
       if (current) link.setAttribute("aria-current", "page");
@@ -433,6 +440,7 @@
           ${sourceLink(photo?.source || photo?.evidence, "图片出处")}
           ${external(photo?.licenseURL, "查看许可")}
           <a href="${escape(fragment("book", record.id, photoIndex, wallId))}">标本记录</a>
+          ${hall === "journal" ? '<a href="conservatory/index.html" target="_blank" rel="noopener">温室布景出处</a>' : ""}
         </div>
       </div>
     </section>`;
