@@ -12,4 +12,6 @@
 
 国立台湾博物馆的枯叶蝶与大白斑蝶另列在百科中，条目提供馆方链接和使用限制。复古画框的卷叶纹改编自 Martin Schongauer 的《Leaf Ornament》，约 1480–1490 年，美国国家美术馆 Rosenwald Collection 藏，馆藏号 1943.3.92。[框饰原作](https://www.nga.gov/artworks/3304-leaf-ornament) · [馆方图像政策](https://www.nga.gov/terms-and-notices)
 
+花室中的槟榔、铁线蕨、芋和蝴蝶兰来自历史植物图版。每幅附原始出处、署名、使用条件和布景处理说明。[植物图版出处](conservatory/index.html)
+
 下载仓库后可直接用浏览器打开 `index.html`。允许联网时可访问外部馆藏记录和许可原文。

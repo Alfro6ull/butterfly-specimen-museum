@@ -207,7 +207,12 @@
     const number = page => String(page).padStart(2, "0");
 
     main.className = "wall";
-    main.innerHTML = `<div class="roomhead">
+    main.innerHTML = `<div class="conservatory" aria-hidden="true">
+        <span class="glasshouse-window"></span><span class="glasshouse-window far-window"></span>
+        <span class="plant palm"></span><span class="plant overhead-palm"></span>
+        <span class="plant taro"></span><span class="plant maidenhair"></span><span class="plant moth-orchid"></span>
+      </div>
+      <div class="roomhead">
         <div class="room-title"><h1 tabindex="-1">常设展厅</h1><div class="count">${gallery.length} 件标本</div></div>
         <div class="room-tools" role="group" aria-label="展厅样式">
           <button type="button" data-hall="cabinet" aria-pressed="${hall === "cabinet"}">复古展厅</button>
@@ -222,7 +227,10 @@
         <button class="arrow" type="button" data-step="1" aria-label="${single ? "下一件标本" : "下一面展墙"}" ${pageIndex === pages - 1 ? "disabled" : ""}>${rightArrow}</button>
       </nav>
       <p class="wall-hint">点画框取色 · 点展签看资料</p>
-      ${hall === "cabinet" ? `<footer><p class="frame-credit" aria-label="画框纹样出处">${external(ornamentSource, "框饰出处 · 美国国家美术馆")}</p></footer>` : ""}
+      <footer><p class="frame-credit scene-byline">
+        ${hall === "cabinet" ? external(ornamentSource, "框饰出处 · 美国国家美术馆") : ""}
+        <a href="conservatory/index.html" target="_blank" rel="noopener">植物图版出处</a>
+      </p></footer>
       <dialog class="placard" id="specimen-placard" aria-labelledby="placard-title"></dialog>`;
     main.querySelectorAll("[data-step]").forEach(button => {
       button.addEventListener("click", () => moveWall(Number(button.dataset.step)));
@@ -668,7 +676,9 @@
         </section>
       </div>
       ${record.observation ? `<section class="lower"><h2 class="section">翅面观察</h2><p>${escape(record.observation)}</p></section>` : ""}
-      <section class="lower"><h2 class="section">图片来源与许可</h2>${photoLicenses(record, noticeConditions)}</section>
+      <section class="lower"><h2 class="section">图片来源与许可</h2>${photoLicenses(record, noticeConditions)}
+        <a class="book-botany-credit" href="conservatory/index.html" target="_blank" rel="noopener">花室植物图版出处</a>
+      </section>
     </article>`;
 
     const searchInput = main.querySelector("input[type=search]");

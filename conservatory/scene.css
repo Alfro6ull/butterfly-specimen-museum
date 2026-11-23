@@ -1,0 +1,133 @@
+/* The glass and printed foliage occupy the wall behind the specimen cases. */
+.wall::after { z-index:-2 }
+.conservatory {
+  position:absolute; inset:0; z-index:-1; isolation:isolate;
+  overflow:hidden; pointer-events:none; user-select:none;
+  --light-pane:rgba(202,211,155,.23); --dark-bar:rgba(20,34,27,.58);
+  background:
+    radial-gradient(ellipse 32% 73% at 1% 50%,#3b563c78,transparent 95%),
+    radial-gradient(ellipse 38% 86% at 100% 15%,#65745365,transparent 92%),
+    linear-gradient(0deg,#15241c80,transparent 26%);
+}
+.conservatory::before {
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(116deg,transparent 51%,#dfd5a309 58%,transparent 65%,#f9ddb506 71%,transparent 77%);
+}
+.glasshouse-window {
+  position:absolute; top:-6%; bottom:7%; right:-9%; width:36%;
+  transform:perspective(900px) rotateY(-20deg); transform-origin:right center;
+  border:3px solid var(--dark-bar); border-radius:51% 51% 0 0 / 24% 24% 0 0;
+  box-shadow:inset 0 0 0 1px var(--light-pane),0 0 0 1px var(--light-pane);
+  background:
+    repeating-linear-gradient(90deg,transparent 0 calc(21% - 4px),var(--dark-bar) calc(21% - 4px) calc(21% - 1px),var(--light-pane) calc(21% - 1px) 21%),
+    repeating-linear-gradient(0deg,transparent 0 calc(23% - 3px),var(--dark-bar) calc(23% - 3px) calc(23% - 1px),var(--light-pane) calc(23% - 1px) 23%),
+    linear-gradient(148deg,#e0dfaf40 0%,#b4cca72d 26%,#819c8329 51%,#5475641a 81%);
+  mask-image:linear-gradient(270deg,#000 15%,#000d 52%,transparent 99%),linear-gradient(#000 53%,transparent 99%);
+  mask-composite:intersect;
+  opacity:.56;
+}
+.glasshouse-window::before {
+  content:""; position:absolute; inset:0; border-radius:inherit;
+  background:url(fern.webp) right -38px top 25% / 72% auto no-repeat;
+  transform:rotate(8deg); filter:brightness(.45) saturate(.6) blur(7px); opacity:.34;
+}
+.glasshouse-window.far-window {
+  right:auto; left:-17%; width:35%; top:5%; bottom:12%;
+  transform:scaleX(-1) perspective(860px) rotateY(-22deg);
+  transform-origin:center;
+  opacity:.42;
+}
+.plant {
+  position:absolute; display:block; background-position:center; background-size:contain;
+  background-repeat:no-repeat; transform-origin:center;
+}
+.plant.palm {
+  width:clamp(310px,36vw,710px); aspect-ratio:799 / 940;
+  left:-21%; bottom:-22%;
+  background-image:url(palm.webp); transform:rotate(8deg);
+  opacity:.86; filter:brightness(.64) saturate(.69) drop-shadow(8px 12px 7px #10251b44);
+}
+.plant.overhead-palm {
+  width:clamp(300px,34vw,650px); aspect-ratio:799 / 940;
+  left:-14%; top:clamp(-495px,-32vw,-250px); transform:rotate(143deg);
+  background-image:url(palm.webp);
+  filter:brightness(.49) saturate(.64) blur(.85px) drop-shadow(12px 12px 6px #15231c55);
+  opacity:.53;
+}
+.plant.taro {
+  width:clamp(108px,15vw,288px); aspect-ratio:461 / 770;
+  left:-2.8%; bottom:-19%; transform:rotate(-20deg);
+  background-image:url(taro.webp); opacity:.90; filter:brightness(.61) saturate(.75) drop-shadow(5px 8px 6px #16201966);
+}
+.plant.maidenhair {
+  width:clamp(190px,24vw,430px); aspect-ratio:563 / 820;
+  right:-10.5%; bottom:-15%; transform:rotate(-22deg);
+  background-image:url(fern.webp); filter:brightness(.83) saturate(.68) drop-shadow(8px 10px 5px #17231b88);
+  opacity:.83;
+}
+.plant.moth-orchid {
+  width:clamp(155px,17vw,296px); aspect-ratio:718 / 850;
+  right:-5.2%; bottom:-8.8%; transform:rotate(-10deg);
+  background-image:url(orchid.webp); filter:brightness(.69) saturate(.70) drop-shadow(7px 9px 6px #13241988);
+  opacity:.88;
+}
+.scene-byline { position:relative; isolation:isolate; display:flex; align-items:center; flex-wrap:wrap; justify-content:center; gap:2px 12px }
+.scene-byline::before {
+  content:""; position:absolute; inset:-6px -11px; pointer-events:none; z-index:-1;
+  background:radial-gradient(ellipse farthest-side,#18171ae3 17%,#18171a91 70%,transparent 100%);
+}
+.scene-byline a { text-shadow:0 1px 3px #150f14,0 0 5px #150f1499 }
+
+/* Night lighting is limited to the vegetation and glass. */
+[data-hall="optical"] .conservatory {
+  --light-pane:rgba(155,188,175,.13); --dark-bar:rgba(35,59,55,.45);
+  background:radial-gradient(ellipse 35% 100% at 100% 10%,#29483f53,transparent 94%),
+    radial-gradient(ellipse 28% 68% at 0% 88%,#233b3057,transparent 98%);
+}
+[data-hall="optical"] .glasshouse-window { opacity:.33 }
+[data-hall="optical"] .glasshouse-window.far-window { opacity:.18 }
+[data-hall="optical"] .plant { opacity:.53; filter:brightness(.49) saturate(.53) }
+[data-hall="optical"] .plant.overhead-palm { opacity:.43; filter:brightness(.40) saturate(.5) blur(.65px) }
+[data-hall="optical"] .plant.moth-orchid { opacity:.60; filter:brightness(.47) saturate(.58) }
+[data-hall="optical"] .scene-byline { color:#beb6c7 }
+
+/* In the encyclopedia the fronds are a pale impression on the page margins. */
+.book .directory {
+  background-color:#efeee8;
+  background-image:linear-gradient(#efeee8ef,#efeee8e0),url(fern.webp);
+  background-repeat:no-repeat; background-position:left bottom,-35px bottom;
+  background-size:100% 100%,165px auto;
+}
+.book article { position:relative; isolation:isolate }
+.book article::before {
+  content:""; position:absolute; right:0; top:0; z-index:-1; width:160px; height:140px; pointer-events:none;
+  background:url(fern.webp) right -20px top -49px / 117px auto no-repeat; opacity:.14;
+  mask-image:linear-gradient(145deg,#000 28%,transparent 95%);
+}
+.book-botany-credit { display:inline-block; margin-top:14px; font:13px/1.65 var(--ui); color:#556348; text-underline-offset:3px }
+
+@media (max-width:900px) {
+  .plant.palm { left:-24% }
+  .plant.maidenhair { right:-13%; bottom:-1% }
+  .plant.moth-orchid { right:-7%; bottom:-4% }
+}
+@media (max-width:700px) {
+  .glasshouse-window { right:-22%; width:63%; top:1%; bottom:6%; opacity:.56 }
+  .glasshouse-window.far-window { width:45%; left:-22%; top:18%; bottom:22% }
+  .plant.palm { left:-130px; bottom:-64px; width:clamp(216px,54vw,350px) }
+  .plant.overhead-palm { left:-142px; top:-232px; width:270px }
+  .plant.taro { left:-28px; bottom:-76px; width:clamp(99px,24vw,145px) }
+  .plant.maidenhair { right:-80px; bottom:8%; width:clamp(159px,32vw,212px) }
+  .plant.moth-orchid { right:-33px; bottom:-12px; width:clamp(104px,22vw,155px) }
+  .scene-byline { gap:1px 8px }
+  [data-hall="optical"] .wall > footer { bottom:7px }
+  .book article::before { width:112px; height:102px; background-size:86px auto }
+}
+@media (max-width:370px), (max-height:515px) {
+  .plant.moth-orchid { right:-44px; bottom:-33px }
+  .plant.maidenhair { right:-112px }
+}
+@media (forced-colors:active) {
+  .conservatory { display:none }
+  .book .directory,.book article { background-image:none }
+}
