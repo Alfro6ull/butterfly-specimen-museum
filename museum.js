@@ -29,7 +29,8 @@
   let initialRender = true;
   let highlightedId = "";
   const hallStorage = "butterfly-museum-hall";
-  const validHall = value => value === "cabinet" || value === "optical";
+  const halls = new Map([["cabinet", "复古展厅"], ["optical", "暗光展厅"], ["journal", "自然手账"]]);
+  const validHall = value => halls.has(value);
   let hall = "optical";
   let wallKey = "";
   let closingPlacard = false;
@@ -40,7 +41,7 @@
   document.body.dataset.hall = hall;
 
   const isWall = mode => mode === "gallery" || mode === "plaque";
-  const singleExhibit = () => narrow.matches || hall === "optical";
+  const singleExhibit = () => narrow.matches || hall !== "cabinet";
 
   const escape = value => String(value ?? "").replace(/[&<>"']/g, char =>
     ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[char]);
@@ -121,6 +122,7 @@
     bookLink.href = fragment("book", bookRecord.id, route.mode === "study" || route.mode === "plaque" ? route.photoIndex : null, wallId);
     const light = route.mode === "book";
     document.body.classList.toggle("light", light);
+    document.body.classList.toggle("journal-open", hall === "journal" && !light);
     for (const [link, current] of [[galleryLink, !light], [bookLink, light]]) {
       link.classList.toggle("on", current);
       if (current) link.setAttribute("aria-current", "page");
@@ -190,6 +192,39 @@
     </article>`;
   }
 
+  function hallTools() {
+    return `<div class="room-tools" role="group" aria-label="展厅样式">${[...halls].map(([id, label]) =>
+      `<button type="button" data-hall="${id}" aria-pressed="${hall === id}">${label}</button>`).join("")}</div>`;
+  }
+
+  function wallNavigation(page, total, single) {
+    const number = n => String(n).padStart(2, "0");
+    return `<nav class="walk" aria-label="${single ? "标本导航" : "展墙导航"}">
+      <button class="arrow" type="button" data-step="-1" aria-label="${single ? "上一件标本" : "上一面展墙"}" ${page === 1 ? "disabled" : ""}>${leftArrow}</button>
+      <div class="page" aria-label="第 ${page} 页，共 ${total} 页" aria-live="polite"><strong>${number(page)}</strong><span>/</span><span>${number(total)}</span></div>
+      <button class="arrow" type="button" data-step="1" aria-label="${single ? "下一件标本" : "下一面展墙"}" ${page === total ? "disabled" : ""}>${rightArrow}</button>
+    </nav>`;
+  }
+
+  function journalPage(page, total, navigationHTML) {
+    const record = records.get(wallId);
+    const photoIndex = selectedPhoto(record);
+    const photo = record.photos[photoIndex];
+    const profiles = window.FIELD_PROFILES;
+    const profile = profiles[record.binomial];
+    const featured = Object.values(profiles).flatMap(profile => {
+      const example = directory.find(item => positions.has(item.id) && item.binomial === profile.binomial);
+      return example ? [{title: profile.commonName, id: example.id, href: galleryFragment(example.id)}] : [];
+    });
+    return window.renderFieldJournal({
+      record, photo, photoIndex, page, total, profile, title: record.name || profile?.commonName || name(record),
+      imageHTML: imageMarkup(photo, record, true), creditHTML: wallPhotoCredit(photo, record),
+      toolsHTML: hallTools(), navigationHTML, viewsHTML: views(record, photoIndex),
+      studyHref: fragment("study", record.id, photoIndex), bookHref: fragment("book", record.id, photoIndex),
+      swatches: (window.FIELD_SWATCHES[photo.key] || []).map(hex => ({hex})), featured, escape, external
+    });
+  }
+
   function wall() {
     const single = singleExhibit();
     const step = single ? 1 : 3;
@@ -200,38 +235,26 @@
     const items = gallery.slice(wallStart, wallStart + 3);
     const newKey = JSON.stringify([hall, single, pageIndex, highlightedId,
       ...items.map(id => [id, selectedPhoto(records.get(id))]), single ? wallId : ""]);
-    if (main.className === "wall" && newKey === wallKey) return;
+    if (main.classList.contains("wall") && newKey === wallKey) return;
     const previousDialog = main.querySelector("dialog.placard[open]");
     previousDialog?.close();
     wallKey = newKey;
-    const number = page => String(page).padStart(2, "0");
-
-    main.className = "wall";
-    main.innerHTML = `<div class="conservatory" aria-hidden="true">
-        <span class="glasshouse-window"></span><span class="glasshouse-window far-window"></span>
-        <span class="plant palm"></span><span class="plant overhead-palm"></span>
-        <span class="plant taro"></span><span class="plant maidenhair"></span><span class="plant moth-orchid"></span>
-      </div>
-      <div class="roomhead">
+    const journal = hall === "journal";
+    const navigation = wallNavigation(pageIndex + 1, pages, single);
+    main.className = journal ? "wall journal-wall" : "wall";
+    const contents = journal ? journalPage(pageIndex + 1, pages, navigation) : `<div class="roomhead">
         <div class="room-title"><h1 tabindex="-1">常设展厅</h1><div class="count">${gallery.length} 件标本</div></div>
-        <div class="room-tools" role="group" aria-label="展厅样式">
-          <button type="button" data-hall="cabinet" aria-pressed="${hall === "cabinet"}">复古展厅</button>
-          <button type="button" data-hall="optical" aria-pressed="${hall === "optical"}">暗光展厅</button>
-        </div>
+        ${hallTools()}
       </div>
       <div class="exhibits gallery-wide" ${single ? "hidden" : ""}>${items.map((id, position) => exhibit(id, position === 1 || items.length === 1)).join("")}</div>
       <div class="exhibits gallery-single" ${single ? "" : "hidden"}>${exhibit(wallId, true)}</div>
-      <nav class="walk" aria-label="${single ? "标本导航" : "展墙导航"}">
-        <button class="arrow" type="button" data-step="-1" aria-label="${single ? "上一件标本" : "上一面展墙"}" ${pageIndex === 0 ? "disabled" : ""}>${leftArrow}</button>
-        <div class="page" aria-label="第 ${pageIndex + 1} 页，共 ${pages} 页" aria-live="polite"><strong>${number(pageIndex + 1)}</strong><span>/</span><span>${number(pages)}</span></div>
-        <button class="arrow" type="button" data-step="1" aria-label="${single ? "下一件标本" : "下一面展墙"}" ${pageIndex === pages - 1 ? "disabled" : ""}>${rightArrow}</button>
-      </nav>
+      ${navigation}
       <p class="wall-hint">点画框取色 · 点展签看资料</p>
-      <footer><p class="frame-credit scene-byline">
-        ${hall === "cabinet" ? external(ornamentSource, "框饰出处 · 美国国家美术馆") : ""}
-        <a href="conservatory/index.html" target="_blank" rel="noopener">植物图版出处</a>
-      </p></footer>
-      <dialog class="placard" id="specimen-placard" aria-labelledby="placard-title"></dialog>`;
+      ${hall === "cabinet" ? `<footer><p class="frame-credit" aria-label="画框纹样出处">${external(ornamentSource, "框饰出处 · 美国国家美术馆")}</p></footer>` : ""}`;
+    main.innerHTML = contents + '<dialog class="placard" id="specimen-placard" aria-labelledby="placard-title"></dialog>';
+    main.querySelectorAll("[data-copy-hex]").forEach(button => {
+      button.addEventListener("click", () => copyHex(button.dataset.copyHex));
+    });
     main.querySelectorAll("[data-step]").forEach(button => {
       button.addEventListener("click", () => moveWall(Number(button.dataset.step)));
     });
@@ -300,6 +323,7 @@
   }
 
   function exhibitControl(id, selector) {
+    if (hall === "journal") return main.querySelector("[data-exhibit]")?.querySelector(selector);
     const pane = singleExhibit() ? ".gallery-single" : ".gallery-wide";
     const exhibit = [...main.querySelectorAll(`${pane} [data-exhibit]`)].find(item => item.dataset.exhibit === id);
     return exhibit?.querySelector(selector);
@@ -387,7 +411,7 @@
 
     main.className = "study";
     main.innerHTML = `<div>
-      <a class="return" href="${escape(galleryFragment())}">← 返回展墙</a>
+      <a class="return" href="${escape(galleryFragment())}">← ${hall === "journal" ? "返回自然手账" : "返回展墙"}</a>
       ${frame}${views(record, photoIndex)}
     </div>
     <section>
@@ -416,7 +440,7 @@
   }
 
   async function copyHex(hex) {
-    const status = main.querySelector("#copy-status");
+    const status = main.querySelector("#copy-status, [data-journal-status]");
     let copied = false;
     try {
       await navigator.clipboard.writeText(hex);
@@ -676,9 +700,7 @@
         </section>
       </div>
       ${record.observation ? `<section class="lower"><h2 class="section">翅面观察</h2><p>${escape(record.observation)}</p></section>` : ""}
-      <section class="lower"><h2 class="section">图片来源与许可</h2>${photoLicenses(record, noticeConditions)}
-        <a class="book-botany-credit" href="conservatory/index.html" target="_blank" rel="noopener">花室植物图版出处</a>
-      </section>
+      <section class="lower"><h2 class="section">图片来源与许可</h2>${photoLicenses(record, noticeConditions)}</section>
     </article>`;
 
     const searchInput = main.querySelector("input[type=search]");
@@ -744,11 +766,6 @@
     if (route.mode === "study") study();
     if (route.mode === "book") book();
 
-    main.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => {
-      const view = Number(button.dataset.view);
-      if (view !== route.photoIndex) navigate(fragment(route.mode, route.record.id, view, wallId));
-    }));
-
     if (!initialRender && restoreFocus && route.mode !== "plaque") {
       let target;
       if (route.mode === "gallery" && previous?.mode === "gallery" && focusedStep) {
@@ -762,6 +779,10 @@
         target = main.querySelector(`[data-view="${route.photoIndex}"]`);
       }
       const stayingOnWall = isWall(route.mode) && isWall(previous?.mode);
+      if (hall === "journal" && route.mode === "gallery" && previous?.mode === "gallery" && previous.record.id !== route.record.id) {
+        target = main.querySelector("h1");
+        window.scrollTo(0, 0);
+      }
       if (!stayingOnWall && (route.mode !== previous?.mode || route.record.id !== previous?.record.id)) window.scrollTo(0, 0);
       if (route.mode === "book" && route.record.id !== previous?.record.id && narrow.matches && active?.closest(".records")) {
         target = main.querySelector("h1");
@@ -774,6 +795,12 @@
 
   window.addEventListener("hashchange", () => render());
   narrow.addEventListener("change", () => render(false));
+  main.addEventListener("click", event => {
+    const button = event.target.closest("button[data-view]");
+    if (!button) return;
+    const view = Number(button.dataset.view);
+    if (view !== route.photoIndex && route.record.photos[view]) navigate(fragment(route.mode, route.record.id, view, wallId));
+  });
   document.addEventListener("keydown", event => {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.target.closest("input,textarea,select,[contenteditable]")) return;
     if (route.mode === "plaque") return; // The modal handles Escape and its open state makes the wall inert.
