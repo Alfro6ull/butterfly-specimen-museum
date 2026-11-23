@@ -19,6 +19,9 @@
   const gallery = data.galleryOrder.filter(id => records.has(id));
   const positions = new Map(gallery.map((id, index) => [id, index]));
   const mobileGallery = gallery.length > 1 ? [gallery[1], gallery[0], ...gallery.slice(2)] : gallery;
+  const cutouts = window.GREENHOUSE_CUTOUTS || {};
+  const canopyGallery = gallery.filter(id => records.get(id).photos.some(photo => cutouts[photo.key]));
+  const canopyPositions = new Map(canopyGallery.map((id, index) => [id, index]));
   const mobilePositions = new Map(mobileGallery.map((id, index) => [id, index]));
   const directory = [...gallery.map(id => records.get(id)), ...data.records.filter(record => !positions.has(record.id))];
   const narrow = window.matchMedia("(max-width: 700px)");
@@ -33,8 +36,8 @@
   let initialRender = true;
   let highlightedId = "";
   const hallStorage = "butterfly-museum-hall";
-  const halls = new Map([["cabinet", "复古展厅"], ["optical", "暗光展厅"], ["journal", "自然手账"]]);
-  const validHall = value => halls.has(value);
+  const halls = new Map([["cabinet", "复古展厅"], ["optical", "暗光展厅"], ["journal", "植物温室"]]);
+  const validHall = value => (halls.has(value) && (value !== "journal" || canopyGallery.length > 0)) || value === "notebook";
   let hall = "optical";
   let wallKey = "";
   let closingPlacard = false;
@@ -42,7 +45,7 @@
     const savedHall = localStorage.getItem(hallStorage);
     if (validHall(savedHall)) hall = savedHall;
   } catch { /* The hall stays available if browser storage is disabled. */ }
-  document.body.dataset.hall = hall;
+  document.body.dataset.hall = hall === "notebook" ? "journal" : hall === "journal" ? "canopy" : hall;
 
   const isWall = mode => mode === "gallery" || mode === "plaque";
   const singleExhibit = () => narrow.matches || hall !== "cabinet";
@@ -93,8 +96,19 @@
     const mode = ["gallery", "plaque", "study", "book"].includes(key) ? key : "gallery";
     const requestedRecord = records.get(args.get("id"));
     const fallback = records.get(wallId);
-    const record = requestedRecord && (mode === "book" || positions.has(requestedRecord.id))
+    let record = requestedRecord && (mode === "book" || positions.has(requestedRecord.id))
       ? requestedRecord : fallback;
+    if (hall === "journal" && isWall(mode) && !canopyPositions.has(record.id)) {
+      if (requestedRecord) {
+        applyHall("notebook");
+        const saved = new URLSearchParams(args);
+        saved.set("hall", "notebook");
+        history.replaceState(history.state, "", `#${mode}?${saved}`);
+      } else {
+        record = records.get(canopyGallery[0]);
+      }
+    }
+    const inCanopy = hall === "journal" && isWall(mode);
     const returnId = args.get("wall");
     if (positions.has(returnId)) wallId = returnId;
     if (positions.has(record.id)) wallId = record.id;
@@ -102,7 +116,14 @@
     const requestedPhoto = Number(args.get("photo")) - 1;
     const remembered = selectedPhoto(record);
     const validRequestedPhoto = Boolean(record.photos[requestedPhoto]);
-    const photoIndex = validRequestedPhoto ? requestedPhoto : remembered;
+    let photoIndex = validRequestedPhoto ? requestedPhoto : remembered;
+    if (inCanopy) {
+      if (!cutouts[record.photos[photoIndex]?.key]) photoIndex = record.photos.findIndex(photo => cutouts[photo.key]);
+      selections.set(record.id, photoIndex);
+      if (requestedRecord && (record.id !== requestedRecord.id || (validRequestedPhoto && requestedPhoto !== photoIndex))) {
+        history.replaceState(history.state, "", fragment(mode, record.id, photoIndex));
+      }
+    }
     if (mode !== "gallery" || validRequestedPhoto) selections.set(record.id, photoIndex);
     return { mode, record, photoIndex };
   }
@@ -126,7 +147,8 @@
     bookLink.href = fragment("book", bookRecord.id, route.mode === "study" || route.mode === "plaque" ? route.photoIndex : null, wallId);
     const light = route.mode === "book";
     document.body.classList.toggle("light", light);
-    const inJournal = hall === "journal" && !light;
+    const inJournal = hall === "notebook" && !light;
+    document.body.classList.toggle("canopy-open", hall === "journal" && !light);
     document.body.classList.toggle("journal-open", inJournal);
     if (inJournal && !greenhouse.isConnected) main.before(greenhouse);
     if (!inJournal && greenhouse.isConnected) greenhouse.remove();
@@ -213,6 +235,35 @@
     </nav>`;
   }
 
+  function canopyPage(navigation) {
+    const record = records.get(wallId);
+    const index = selectedPhoto(record);
+    const photo = record.photos[index];
+    const study = escape(fragment("study", record.id, index));
+    const notes = escape(fragment("gallery", record.id, index).replace("hall=journal", "hall=notebook"));
+    const colors = window.FIELD_SWATCHES[photo.key] || [];
+    const label = escape(name(record));
+    const scientific = latin(record);
+    const availableViews = record.photos.flatMap((item, at) => cutouts[item.key] ? [at] : []);
+    const viewLinks = availableViews.length > 1 ? availableViews.map(at =>
+      `<a href="${escape(fragment("gallery", record.id, at))}" ${index === at ? 'aria-current="true"' : ""}>${escape(viewName(record.photos[at], at, record.photos.length))}</a>`).join("") : "";
+    return `<article class="canopy-exhibit" data-exhibit="${escape(record.id)}">
+      <span class="canopy-fronds" aria-hidden="true"></span>
+      <header class="canopy-top"><span>植物温室</span>${hallTools()}</header>
+      <a class="frame-link canopy-butterfly" href="${study}" aria-label="近观${label}">
+        <img src="${escape(cutouts[photo.key])}" alt="${label} · 馆藏标本" draggable="false">
+      </a>
+      <div class="canopy-bottom"><div class="canopy-caption">
+        <h1 tabindex="-1"${label === scientific ? ' lang="la"' : ''}>${label}</h1>
+        ${scientific && scientific !== name(record) ? `<i lang="la">${escape(scientific)}</i>` : ""}
+        <div class="canopy-actions"><button class="plaque" type="button" data-plaque="${escape(record.id)}" aria-label="查看${label}展签" aria-haspopup="dialog">标本展签</button><a href="${notes}">观察手账</a>${viewLinks}</div>
+      </div><div class="canopy-palette"><a href="${study}">近观取色 ↗</a>
+        <div>${colors.map(hex => `<button type="button" data-copy-hex="${hex}" style="--swatch:${hex}" aria-label="复制色值 ${hex}" title="${hex}"></button>`).join("")}</div>
+        <span role="status" data-journal-status></span></div></div>
+      <footer class="canopy-footer">${wallPhotoCredit(photo,record)}<a href="conservatory/index.html" target="_blank" rel="noopener">温室合成出处</a>${navigation}</footer>
+    </article>`;
+  }
+
   function journalPage(page, total, navigationHTML) {
     const record = records.get(wallId);
     const photoIndex = selectedPhoto(record);
@@ -235,21 +286,21 @@
   function wall() {
     const single = singleExhibit();
     const step = single ? 1 : 3;
-    const index = (single ? mobilePositions : positions).get(wallId);
+    const index = (hall === "journal" ? canopyPositions : single ? mobilePositions : positions).get(wallId);
     const pageIndex = Math.floor(index / step);
-    const pages = Math.ceil(gallery.length / step);
+    const pages = Math.ceil((hall === "journal" ? canopyGallery : gallery).length / step);
     const wallStart = Math.floor(positions.get(wallId) / 3) * 3;
     const items = gallery.slice(wallStart, wallStart + 3);
     const newKey = JSON.stringify([hall, single, pageIndex, highlightedId,
       ...items.map(id => [id, selectedPhoto(records.get(id))]), single ? wallId : ""]);
-    if (main.classList.contains("wall") && newKey === wallKey) return;
+    if ((main.classList.contains("wall") || main.classList.contains("canopy-wall")) && newKey === wallKey) return;
     const previousDialog = main.querySelector("dialog.placard[open]");
     previousDialog?.close();
     wallKey = newKey;
-    const journal = hall === "journal";
+    const journal = hall === "notebook";
     const navigation = wallNavigation(pageIndex + 1, pages, single);
-    main.className = journal ? "wall journal-wall" : "wall";
-    const contents = journal ? journalPage(pageIndex + 1, pages, navigation) : `<div class="roomhead">
+    main.className = hall === "journal" ? "canopy-wall" : journal ? "wall journal-wall" : "wall";
+    const contents = hall === "journal" ? canopyPage(navigation) : journal ? journalPage(pageIndex + 1, pages, navigation) : `<div class="roomhead">
         <div class="room-title"><h1 tabindex="-1">常设展厅</h1><div class="count">${gallery.length} 件标本</div></div>
         ${hallTools()}
       </div>
@@ -286,11 +337,14 @@
 
   function applyHall(nextHall) {
     hall = nextHall;
-    document.body.dataset.hall = hall;
+    document.body.dataset.hall = hall === "notebook" ? "journal" : hall === "journal" ? "canopy" : hall;
   }
 
   function setHall(nextHall) {
-    if (nextHall === hall || route.mode !== "gallery") return;
+    if (!validHall(nextHall) || nextHall === hall || route.mode !== "gallery") return;
+    if (nextHall === "journal" && !canopyPositions.has(wallId)) {
+      wallId = canopyPositions.has(initial) ? initial : canopyGallery[0];
+    }
     applyHall(nextHall);
     try { localStorage.setItem(hallStorage, hall); } catch { /* The choice remains active for this visit. */ }
     highlightedId = wallId;
@@ -302,13 +356,14 @@
   function moveWall(direction) {
     if (route.mode !== "gallery") return;
     const single = singleExhibit();
-    const index = (single ? mobilePositions : positions).get(wallId);
+    const index = (hall === "journal" ? canopyPositions : single ? mobilePositions : positions).get(wallId);
     const step = single ? 1 : 3;
     const nextPage = Math.floor(index / step) + direction;
-    if (nextPage < 0 || nextPage * step >= gallery.length) return;
-    const nextIndex = Math.min(nextPage * step + (step === 3 ? 1 : 0), gallery.length - 1);
+    const order = hall === "journal" ? canopyGallery : single ? mobileGallery : gallery;
+    if (nextPage < 0 || nextPage * step >= order.length) return;
+    const nextIndex = Math.min(nextPage * step + (step === 3 ? 1 : 0), order.length - 1);
     highlightedId = "";
-    navigate(galleryFragment((single ? mobileGallery : gallery)[nextIndex]));
+    navigate(galleryFragment(order[nextIndex]));
   }
 
   function openPlacard(id) {
@@ -330,7 +385,7 @@
   }
 
   function exhibitControl(id, selector) {
-    if (hall === "journal") return main.querySelector("[data-exhibit]")?.querySelector(selector);
+    if (hall === "journal" || hall === "notebook") return main.querySelector("[data-exhibit]")?.querySelector(selector);
     const pane = singleExhibit() ? ".gallery-single" : ".gallery-wide";
     const exhibit = [...main.querySelectorAll(`${pane} [data-exhibit]`)].find(item => item.dataset.exhibit === id);
     return exhibit?.querySelector(selector);
@@ -358,7 +413,7 @@
       ${photo ? `<div class="placard-credit">
         <p>${escape(viewName(photo, photoIndex, record.photos.length))} · ${photoByline(photo, record)}</p>
         ${photo.conditions ? `<p>${escape(photo.conditions)}</p>` : ""}
-        ${paperMask(photo) ? `<p>${paperMaskNote}</p>` : ""}
+        ${hall === "journal" && cutouts[photo.key] ? "<p>温室展示取自这张馆藏照片，沿标本轮廓去除底色，与温室实景合成。点击近观可看原照。</p>" : paperMask(photo) ? `<p>${paperMaskNote}</p>` : ""}
         <div>
           ${external(photo.originalURL, "查看原图")}
           ${sourceLink(photo.source || photo.evidence, "图片出处")}
@@ -418,7 +473,7 @@
 
     main.className = "study";
     main.innerHTML = `<div>
-      <a class="return" href="${escape(galleryFragment())}">← ${hall === "journal" ? "返回自然手账" : "返回展墙"}</a>
+      <a class="return" href="${escape(galleryFragment())}">← ${hall === "journal" ? "返回植物温室" : hall === "notebook" ? "返回自然手账" : "返回展墙"}</a>
       ${frame}${views(record, photoIndex)}
     </div>
     <section>
@@ -440,7 +495,7 @@
           ${sourceLink(photo?.source || photo?.evidence, "图片出处")}
           ${external(photo?.licenseURL, "查看许可")}
           <a href="${escape(fragment("book", record.id, photoIndex, wallId))}">标本记录</a>
-          ${hall === "journal" ? '<a href="conservatory/index.html" target="_blank" rel="noopener">温室布景出处</a>' : ""}
+          ${(hall === "journal" || hall === "notebook") ? '<a href="conservatory/index.html" target="_blank" rel="noopener">温室布景出处</a>' : ""}
         </div>
       </div>
     </section>`;
@@ -658,7 +713,7 @@
         ${photo.hasImage && photo.note && photo.note !== photo.conditions ? `<p>${escape(photo.note)}</p>` : ""}
         ${photo.hasImage && photo.displayTreatment ? `<p>展示处理：${escape(photo.displayTreatment)}。展示图沿用原图许可。</p>` : ""}
         ${photo.hasImage && photo.wallCropped && photo.wallTreatment ? `<p>${escape(photo.wallTreatment)}。</p>` : ""}
-        ${paperMask(photo) ? `<p>${paperMaskNote}</p>` : ""}
+        ${hall === "journal" && cutouts[photo.key] ? "<p>温室展示取自这张馆藏照片，沿标本轮廓去除底色，与温室实景合成。点击近观可看原照。</p>" : paperMask(photo) ? `<p>${paperMaskNote}</p>` : ""}
         <div class="links">${links}${!photo.licenseURL && photo.license ? escape(photo.license) : ""}</div>
       </div>`;
     }).join("");
@@ -787,7 +842,7 @@
         target = main.querySelector(`[data-view="${route.photoIndex}"]`);
       }
       const stayingOnWall = isWall(route.mode) && isWall(previous?.mode);
-      if (hall === "journal" && route.mode === "gallery" && previous?.mode === "gallery" && previous.record.id !== route.record.id) {
+      if ((hall === "journal" || hall === "notebook") && route.mode === "gallery" && previous?.mode === "gallery" && previous.record.id !== route.record.id) {
         target = main.querySelector("h1");
         window.scrollTo(0, 0);
       }

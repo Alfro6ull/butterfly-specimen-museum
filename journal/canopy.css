@@ -1,0 +1,87 @@
+body.canopy-open { background:#14281e }
+body.canopy-open .topbar { background:#172b21;color:#eff1da;border-bottom-color:#bed1ad38;box-shadow:none }
+body.canopy-open .brand svg,body.canopy-open .switch { color:#c2d0b6 }
+body.canopy-open .switch a.on { color:#fff8e7 }
+body.canopy-open .switch a.on::after { background:#c8d6b9 }
+.canopy-wall { color:#faf5df; background:#1e3928 }
+.canopy-exhibit {
+  position:relative;isolation:isolate;display:grid;
+  grid-template-rows:auto minmax(210px,1fr) auto auto;
+  min-height:calc(100svh - 72px);
+  padding:0 clamp(24px,6.5vw,110px);
+}
+.canopy-exhibit::before,.canopy-fronds {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+}
+.canopy-exhibit::before,.canopy-fronds {
+  background:
+    linear-gradient(180deg,#0b201ad9,transparent 22%,transparent 54%,#091c16b8 84%,#091b16f2),
+    linear-gradient(90deg,#10271950,transparent 44%,transparent 72%,#0b251d38),
+    #283c29 url("../conservatory/palm-house.webp") center / cover no-repeat;
+}
+.canopy-fronds {
+  z-index:1;
+  mask:url("../conservatory/palm-fronds.png") center / cover no-repeat;
+  -webkit-mask:url("../conservatory/palm-fronds.png") center / cover no-repeat;
+}
+.canopy-top,.canopy-bottom,.canopy-footer { position:relative;z-index:2 }
+.canopy-top {grid-row:1}.canopy-bottom {grid-row:3}.canopy-footer {grid-row:4}
+.canopy-top,.canopy-bottom,.canopy-footer { display:flex;align-items:center;justify-content:space-between;gap:18px }
+.canopy-top { padding:clamp(17px,3.5vh,36px) 0 }
+.canopy-top>span { font:500 clamp(18px,1.8vw,27px)/1.1 var(--serif);letter-spacing:.14em;text-shadow:0 1px 6px #0c2119 }
+.canopy-top .room-tools { background:#14271bd6;border-color:#e1e8c95e;border-radius:3px }
+.canopy-top .room-tools button { color:#ecefdc }
+.canopy-top .room-tools [aria-pressed=true] { background:#e4e8d1;color:#253e2d;border-color:transparent }
+.canopy-top .room-tools button::before { display:none }
+.canopy-butterfly {
+  position:absolute;z-index:0;
+  left:calc(50% - max(4.65vw,6.0svh));top:48%;
+  transform:translate(-50%,-50%) rotate(-7deg);
+  display:grid;place-items:center;
+  width:clamp(175px,19vw,298px);height:clamp(155px,25svh,256px);
+  outline-offset:9px;
+}
+.canopy-butterfly img {
+  width:100%;height:100%;object-fit:contain;display:block;
+  filter:drop-shadow(1px 3px 2px #15261866) drop-shadow(4px 10px 10px #182a1c61);
+}
+.canopy-bottom { align-items:flex-end;padding:12px 0 clamp(17px,3vh,29px);gap:24px }
+.canopy-caption { min-width:0;text-shadow:0 1px 7px #0a211a }
+.canopy-caption h1 { margin:0;font:500 clamp(29px,4vw,62px)/1.12 var(--serif);letter-spacing:.055em;overflow-wrap:anywhere }
+.canopy-caption h1[lang=la] { font-family:var(--latin);font-style:italic;letter-spacing:0 }
+.canopy-caption i { display:block;margin-top:5px;color:#e6e6ce;font:italic clamp(18px,2.1vw,30px)/1.2 var(--latin) }
+.canopy-actions { display:flex;flex-wrap:wrap;align-items:center;gap:17px;margin-top:13px }
+.canopy-actions .plaque {
+  min-width:0;min-height:32px;margin:0;padding:5px 13px;border:1px solid #efecd387;
+  background:#1a3025c4;color:#f8f4de;box-shadow:none;border-radius:2px;font:13px var(--serif);
+}
+.canopy-actions .plaque::after,.canopy-actions .plaque::before { display:none }
+.canopy-actions [aria-current=true] { text-decoration:underline double;text-underline-offset:4px }
+.canopy-actions a,.canopy-palette>a,.canopy-footer>a { font:12px var(--ui);text-underline-offset:4px }
+.canopy-palette { flex:none;text-align:right;position:relative }
+.canopy-palette>div { display:flex;margin-top:9px;gap:3px }
+.canopy-palette button { width:clamp(22px,2.4vw,38px);height:26px;background:var(--swatch);border:1px solid #e8dfc26b;padding:0 }
+.canopy-palette [role=status]:not(:empty) { position:absolute;bottom:100%;right:0;white-space:nowrap;background:#173622;color:#fff9e7;font:12px var(--ui);padding:4px 7px }
+.canopy-footer { padding:11px 0 15px;border-top:1px solid #cfdab249;justify-content:flex-start;gap:18px }
+.canopy-footer .photo-credit { display:flex;align-items:center;gap:12px;color:#e0e4cd;margin:0;text-align:start;line-height:1.5 }
+.canopy-footer .credit-by { margin:0;font-size:12px }
+.canopy-footer .credit-links { display:flex;flex-wrap:wrap;gap:8px }
+.canopy-footer .credit-links a,.canopy-footer>a { color:#d9e2d0;font-size:11px;white-space:nowrap }
+.canopy-footer .walk { margin:0 0 0 auto;gap:10px;color:#f5f2df }
+.canopy-footer .walk .arrow { width:36px;height:36px;border:1px solid #c9d7b86b;background:#1c3527;color:inherit }
+.canopy-footer .walk .page span { color:#ccdbc7 }
+.canopy-wall :focus-visible { outline:2px solid #fff3c3;outline-offset:3px }
+body.canopy-open .study { background:#1c3227 }
+@media(max-width:700px) {
+  .canopy-exhibit { min-height:calc(100svh - 58px);padding:0 clamp(16px,5vw,30px);grid-template-rows:auto minmax(200px,1fr) auto auto }
+  .canopy-exhibit::before { background-position:50% 50% }
+  .canopy-top { gap:8px }.canopy-top .room-tools button { padding-inline:6px }
+  .canopy-butterfly { width:clamp(153px,43vw,234px);height:clamp(145px,24svh,220px) }
+  .canopy-bottom { gap:12px }.canopy-caption h1 { font-size:clamp(25px,7vw,38px) }
+  .canopy-palette button { width:clamp(15px,4.5vw,25px);height:23px }
+  .canopy-footer { display:grid;grid-template-columns:1fr auto;gap:4px 9px;padding-block:10px }
+  .canopy-footer .photo-credit { display:block }.canopy-footer .credit-by { font-size:10px }
+  .canopy-footer>a { grid-column:1;width:max-content }
+  .canopy-footer .walk { grid-column:2;grid-row:1/3;gap:3px }.canopy-footer .walk .page { min-width:42px;gap:4px }
+  .canopy-footer .walk .arrow { width:30px;height:33px }
+}
