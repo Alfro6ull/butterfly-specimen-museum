@@ -260,7 +260,7 @@
       </div><div class="canopy-palette"><a href="${study}">近观取色 ↗</a>
         <div>${colors.map(hex => `<button type="button" data-copy-hex="${hex}" style="--swatch:${hex}" aria-label="复制色值 ${hex}" title="${hex}"></button>`).join("")}</div>
         <span role="status" data-journal-status></span></div></div>
-      <footer class="canopy-footer">${wallPhotoCredit(photo,record)}<a href="conservatory/index.html" target="_blank" rel="noopener">温室合成出处</a>${navigation}</footer>
+      <footer class="canopy-footer">${wallPhotoCredit(photo,record)}<a href="conservatory/index.html" target="_blank" rel="noopener">花房图版出处</a>${navigation}</footer>
     </article>`;
   }
 
@@ -413,7 +413,7 @@
       ${photo ? `<div class="placard-credit">
         <p>${escape(viewName(photo, photoIndex, record.photos.length))} · ${photoByline(photo, record)}</p>
         ${photo.conditions ? `<p>${escape(photo.conditions)}</p>` : ""}
-        ${hall === "journal" && cutouts[photo.key] ? "<p>温室展示取自这张馆藏照片，沿标本轮廓去除底色，与温室实景合成。点击近观可看原照。</p>" : paperMask(photo) ? `<p>${paperMaskNote}</p>` : ""}
+        ${hall === "journal" && cutouts[photo.key] ? "<p>温室展示取自这张馆藏照片，沿标本轮廓去除底色，置于幻想花房的拱形展框内。点击近观可看原照。</p>" : paperMask(photo) ? `<p>${paperMaskNote}</p>` : ""}
         <div>
           ${external(photo.originalURL, "查看原图")}
           ${sourceLink(photo.source || photo.evidence, "图片出处")}
@@ -713,7 +713,7 @@
         ${photo.hasImage && photo.note && photo.note !== photo.conditions ? `<p>${escape(photo.note)}</p>` : ""}
         ${photo.hasImage && photo.displayTreatment ? `<p>展示处理：${escape(photo.displayTreatment)}。展示图沿用原图许可。</p>` : ""}
         ${photo.hasImage && photo.wallCropped && photo.wallTreatment ? `<p>${escape(photo.wallTreatment)}。</p>` : ""}
-        ${hall === "journal" && cutouts[photo.key] ? "<p>温室展示取自这张馆藏照片，沿标本轮廓去除底色，与温室实景合成。点击近观可看原照。</p>" : paperMask(photo) ? `<p>${paperMaskNote}</p>` : ""}
+        ${hall === "journal" && cutouts[photo.key] ? "<p>温室展示取自这张馆藏照片，沿标本轮廓去除底色，置于幻想花房的拱形展框内。点击近观可看原照。</p>" : paperMask(photo) ? `<p>${paperMaskNote}</p>` : ""}
         <div class="links">${links}${!photo.licenseURL && photo.license ? escape(photo.license) : ""}</div>
       </div>`;
     }).join("");
