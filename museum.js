@@ -223,7 +223,7 @@
     const viewLinks = availableViews.length > 1 ? availableViews.map(at =>
       `<a href="${escape(fragment("gallery", record.id, at))}" ${index === at ? 'aria-current="true"' : ""}>${escape(viewName(record.photos[at], at, record.photos.length))}</a>`).join("") : "";
     return `<article class="canopy-exhibit" data-exhibit="${escape(record.id)}">
-      <span class="canopy-fronds" aria-hidden="true"></span>
+      <span class="canopy-fronds" aria-hidden="true"></span><span class="canopy-understory" aria-hidden="true"></span>
       <header class="canopy-top"><span>繁花温室</span>${hallTools()}</header>
       <a class="frame-link canopy-butterfly" href="${study}" aria-label="近观${label}">
         ${cutouts[photo.key] ? `<img src="${escape(cutouts[photo.key])}" alt="${label} · 馆藏标本" draggable="false">` : imageMarkup(photo, record, true)}
@@ -285,6 +285,20 @@
       <p class="wall-hint">点画框取色 · 点展签看资料</p>
       ${hall === "cabinet" ? `<footer><p class="frame-credit" aria-label="画框纹样出处">${external(ornamentSource, "框饰出处 · 美国国家美术馆")}</p></footer>` : ""}`;
     main.innerHTML = contents + '<dialog class="placard" id="specimen-placard" aria-labelledby="placard-title"></dialog>';
+    const scene = main.querySelector(".canopy-exhibit");
+    if (scene && matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches) {
+      function shiftLayers(x, y) {
+        for (const [layer, distance] of [["far", 2], ["mid", -5], ["near", -12]]) {
+          scene.style.setProperty(`--${layer}-x`, `${x * distance}px`);
+          scene.style.setProperty(`--${layer}-y`, `${y * distance}px`);
+        }
+      }
+      scene.addEventListener("pointermove", event => {
+        const bounds = scene.getBoundingClientRect();
+        shiftLayers((event.clientX - bounds.left) / bounds.width * 2 - 1, (event.clientY - bounds.top) / bounds.height * 2 - 1);
+      });
+      scene.addEventListener("pointerleave", () => shiftLayers(0, 0));
+    }
     main.querySelectorAll("[data-copy-hex]").forEach(button => {
       button.addEventListener("click", () => copyHex(button.dataset.copyHex));
     });

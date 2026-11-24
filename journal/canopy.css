@@ -12,9 +12,10 @@ body.canopy-open .switch a.on::after { background:#c8d6b9 }
 }
 .canopy-exhibit {overflow:hidden;background:#81948a}
 .canopy-fronds {position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#071b2366,transparent 20%,transparent 65%,#071b2594),url("../conservatory/rainforest.webp") center center / cover no-repeat}
-.canopy-fronds {filter:saturate(.46) contrast(.73) brightness(.88) blur(1px);inset:-3px}
-.canopy-exhibit::before {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 52% 40%,#d9e5ce44,transparent 51%),linear-gradient(0deg,#1d3634a8,transparent 48%)}
-.canopy-exhibit::after {content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:url("../conservatory/fern.webp") no-repeat left -12vw bottom -24%,url("../conservatory/palm.webp") no-repeat right -17vw bottom -30%;background-size:auto 72%,auto 88%;filter:brightness(.35) saturate(.55) blur(1.8px)}
+.canopy-fronds {filter:saturate(.42) contrast(.68) brightness(.9) blur(3px);inset:-12px;transform:translate(var(--far-x,0px),var(--far-y,0px))}
+.canopy-exhibit::before {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 52% 40%,#d9e5ce55,transparent 57%),linear-gradient(0deg,#1d3634a8,transparent 48%)}
+.canopy-understory {position:absolute;inset:-12px;z-index:-1;pointer-events:none;background:url("../conservatory/fern.webp") right -3vw center / auto 77% no-repeat;filter:saturate(.45) brightness(.58) blur(.6px);transform:translate(var(--mid-x,0px),var(--mid-y,0px))}
+.canopy-exhibit::after {content:"";position:absolute;inset:-14px;pointer-events:none;z-index:1;background:url("../conservatory/fern.webp") no-repeat left -8vw bottom -25%,url("../conservatory/palm.webp") no-repeat right -18vw bottom -44%;background-size:auto 81%,auto 87%;filter:brightness(.38) saturate(.55) blur(1.4px);transform:translate(var(--near-x,0px),var(--near-y,0px))}
 .canopy-top,.canopy-bottom,.canopy-footer { position:relative;z-index:2 }
 .canopy-top {grid-row:1}.canopy-bottom {grid-row:3}.canopy-footer {grid-row:4}
 .canopy-top,.canopy-bottom,.canopy-footer { display:flex;align-items:center;justify-content:space-between;gap:18px }
@@ -27,15 +28,16 @@ body.canopy-open .switch a.on::after { background:#c8d6b9 }
 .canopy-butterfly {
   position:relative;grid-row:2;align-self:center;justify-self:center;
   display:grid;place-items:center;width:min(40vw,460px);aspect-ratio:600/380;
-  background:url("../conservatory/leaf-mount.svg") center / contain no-repeat;
-  filter:drop-shadow(0 9px 6px #19352c40);
+  isolation:isolate;
 }
 .canopy-butterfly::before {
-  content:"";position:absolute;right:99%;top:94%;width:50vw;height:24vh;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 150' preserveAspectRatio='none'%3E%3Cpath d='M-8 140C140 116 371 68 502 0' fill='none' stroke='%23536c5b' stroke-width='5'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-  pointer-events:none;
+  content:"";position:absolute;z-index:-1;pointer-events:none;width:165%;aspect-ratio:3/2;left:-56%;top:50%;
+  transform:translateY(-42%) rotate(-5deg);
+  background:url("../conservatory/rain-branch.webp") center / contain no-repeat;
+  mask-image:linear-gradient(37deg,transparent 0%,#000 15%);
+  filter:drop-shadow(0 4px 3px #182e2438);
 }
-.canopy-butterfly img {width:56%;height:68%;object-fit:contain;transform:rotate(-9deg);filter:drop-shadow(0 2px 1px #2334296b)}
+.canopy-butterfly img {width:60%;height:74%;object-fit:contain;transform:rotate(-9deg);filter:drop-shadow(-1px 2px 1px #23342982)}
 .canopy-bottom { align-items:flex-end;padding:12px 0 clamp(17px,3vh,29px);gap:24px }
 .canopy-caption { min-width:0;text-shadow:0 1px 7px #0a211a }
 .canopy-caption h1 { margin:0;font:500 clamp(29px,4vw,62px)/1.12 var(--serif);letter-spacing:.055em;overflow-wrap:anywhere }
@@ -65,6 +67,7 @@ body.canopy-open .switch a.on::after { background:#c8d6b9 }
 body.canopy-open .study { background:#1c3227 }
 @media(max-width:700px) {
   .canopy-exhibit { min-height:calc(100svh - 58px);padding:0 clamp(16px,5vw,30px);grid-template-rows:auto minmax(200px,1fr) auto auto }
+  .canopy-understory {background-size:auto 55%;background-position:right -42vw center}
   .canopy-exhibit::after {background-size:auto 45%,auto 56%;background-position:left -44vw bottom -9%,right -54vw bottom -12%}
   .canopy-top { gap:8px }.canopy-top .room-tools button { padding-inline:6px }
   .canopy-butterfly { width:min(77vw,350px) }
