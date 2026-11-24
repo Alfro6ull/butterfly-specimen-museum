@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380">
+  <defs>
+    <linearGradient id="blade" x2=".8" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#728d72"/><stop offset=".54" stop-color="#94a58a"/><stop offset="1" stop-color="#637f68"/></linearGradient>
+    <path id="outline" d="M60 312C25 255 63 142 159 89C274 26 432 66 573 18C548 60 544 122 519 181C477 287 366 348 246 347C170 349 111 332 60 312Z"/>
+    <clipPath id="clip"><use href="#outline"/></clipPath>
+  </defs>
+  <path d="M0 363Q33 334 66 308" fill="none" stroke="#617662" stroke-width="9"/>
+  <use href="#outline" fill="url(#blade)" stroke="#5c7663" stroke-width="2"/>
+  <g clip-path="url(#clip)" fill="none" stroke="#516e59" opacity=".48" stroke-width="1.5">
+    <path d="M82 300Q91 218 89 154M121 279Q152 216 157 85M175 253Q224 184 234 44M233 225Q294 161 323 42M292 194Q373 133 416 33M360 158Q444 115 494 42M426 119Q491 98 553 40"/>
+    <path d="M89 295Q147 327 199 354M149 266Q236 293 286 350M211 235Q315 264 359 327M276 202Q392 222 437 289M344 165Q449 183 491 229M405 132Q492 135 534 167M467 96Q524 99 553 120"/>
+  </g>
+  <path d="M8 356C134 254 346 194 569 22" fill="none" stroke="#b9c3a4" stroke-width="3" opacity=".85"/>
+</svg>
