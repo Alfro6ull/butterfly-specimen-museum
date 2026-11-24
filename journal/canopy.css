@@ -10,24 +10,8 @@ body.canopy-open .switch a.on::after { background:#c8d6b9 }
   min-height:calc(100svh - 72px);
   padding:0 clamp(24px,6.5vw,110px);
 }
-.canopy-exhibit {overflow:hidden;background:radial-gradient(ellipse at 50% 35%,#758f83 0%,#456a62 29%,#244b44 60%,#122f30 100%)}
-.canopy-exhibit::before,.canopy-fronds {content:"";position:absolute;inset:0;pointer-events:none;z-index:-1}
-.canopy-exhibit::before {
-  background:linear-gradient(0deg,#102929 0%,transparent 37%),
-    radial-gradient(ellipse 49% 125% at 50% 100%,transparent 96%,#b9aa7666 96.3%,transparent 96.8%,transparent 98%,#cfb77c70 98.4%,transparent 99%),
-    repeating-conic-gradient(from -54deg at 50% 104%,transparent 0 11.8deg,#cdbb8c36 11.9deg 12deg);
-}
-.canopy-fronds {overflow:hidden}
-.canopy-fronds::before,.canopy-fronds::after {content:"";position:absolute;inset:0;background-repeat:no-repeat;pointer-events:none}
-.canopy-fronds::before {
-  background-image:url("../conservatory/palm.webp"),url("../conservatory/fern.webp");
-  background-position:left -6vw bottom -9vh,right -4vw bottom -10vh;
-  background-size:auto 83%,auto 92%;opacity:.79;filter:brightness(.8) saturate(.76);
-}
-.canopy-fronds::after {
-  background-image:linear-gradient(0deg,#102e2df5,transparent 39%),url("../conservatory/orchid.webp"),url("../conservatory/taro.webp");
-  background-size:100% 100%,auto 57%,auto 54%;background-position:center,right -2vw bottom -4vh,left -3vw bottom -9vh;
-}
+.canopy-exhibit {overflow:hidden;background:#214539}
+.canopy-fronds {position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#071b2366,transparent 20%,transparent 65%,#071b2594),url("../conservatory/rainforest.webp") center center / cover no-repeat}
 .canopy-top,.canopy-bottom,.canopy-footer { position:relative;z-index:2 }
 .canopy-top {grid-row:1}.canopy-bottom {grid-row:3}.canopy-footer {grid-row:4}
 .canopy-top,.canopy-bottom,.canopy-footer { display:flex;align-items:center;justify-content:space-between;gap:18px }
@@ -77,8 +61,6 @@ body.canopy-open .study { background:#1c3227 }
 @media(max-width:700px) {
   .canopy-exhibit { min-height:calc(100svh - 58px);padding:0 clamp(16px,5vw,30px);grid-template-rows:auto minmax(200px,1fr) auto auto }
   .canopy-exhibit::before { background-position:50% 50% }
-  .canopy-fronds::before {background-size:auto 68%,auto 75%;background-position:left -47vw bottom 4vh,right -34vw bottom 4vh}
-  .canopy-fronds::after {background-size:100% 100%,auto 46%,auto 38%;background-position:center,right -25vw bottom 0,left -22vw bottom 0}
   .canopy-top { gap:8px }.canopy-top .room-tools button { padding-inline:6px }
   .canopy-butterfly { width:min(54vw,290px);height:min(28svh,250px) }
   .canopy-bottom { gap:12px }.canopy-caption h1 { font-size:clamp(25px,7vw,38px) }
@@ -90,18 +72,11 @@ body.canopy-open .study { background:#1c3227 }
   .canopy-footer .walk .arrow { width:30px;height:33px }
 }
 
-/* Flowering branches occupy the margins of the glasshouse. */
-.flower-borders {position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-.flower-borders::before,.flower-borders::after {content:"";position:absolute;top:0;bottom:0;width:45%;background:url("../conservatory/flower-sprays.svg") left center / auto 100% no-repeat}
-.flower-borders::after {right:0;transform:scaleX(-1);background-size:auto 89%;background-position:left 15%}
-.flower-borders::before {left:0}
-.canopy-exhibit {background:radial-gradient(ellipse at 50% 30%,#aeae82,#6c8770 28%,#375f52 62%,#183932)}
 .canopy-caption,.canopy-palette {position:relative}
 .canopy-bottom::before,.canopy-footer::before {content:"";position:absolute;inset:-30% -10vw -1px;z-index:-1;pointer-events:none;background:linear-gradient(transparent,#142f29ed)}
 .canopy-footer::before {inset:0 -10vw;background:#142f29ed}
 @media(max-width:700px){
   .canopy-top {flex-wrap:wrap}
-  .flower-borders::before,.flower-borders::after {width:34%;background-size:auto 80%;background-position:25% center}
   .canopy-top .room-tools {display:flex;flex-wrap:wrap}
   [data-hall="journal"] .journal-header .room-tools {flex-wrap:wrap}
 }

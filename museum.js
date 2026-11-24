@@ -223,7 +223,7 @@
     const viewLinks = availableViews.length > 1 ? availableViews.map(at =>
       `<a href="${escape(fragment("gallery", record.id, at))}" ${index === at ? 'aria-current="true"' : ""}>${escape(viewName(record.photos[at], at, record.photos.length))}</a>`).join("") : "";
     return `<article class="canopy-exhibit" data-exhibit="${escape(record.id)}">
-      <span class="canopy-fronds" aria-hidden="true"></span><span class="flower-borders" aria-hidden="true"></span>
+      <span class="canopy-fronds" aria-hidden="true"></span>
       <header class="canopy-top"><span>繁花温室</span>${hallTools()}</header>
       <a class="frame-link canopy-butterfly" href="${study}" aria-label="近观${label}">
         ${cutouts[photo.key] ? `<img src="${escape(cutouts[photo.key])}" alt="${label} · 馆藏标本" draggable="false">` : imageMarkup(photo, record, true)}
@@ -235,7 +235,7 @@
       </div><div class="canopy-palette"><a href="${study}">近观取色 ↗</a>
         <div>${colors.map(hex => `<button type="button" data-copy-hex="${hex}" style="--swatch:${hex}" aria-label="复制色值 ${hex}" title="${hex}"></button>`).join("")}</div>
         <span role="status" data-journal-status></span></div></div>
-      <footer class="canopy-footer">${wallPhotoCredit(photo,record)}<a href="conservatory/index.html" target="_blank" rel="noopener">花房图版出处</a>${navigation}</footer>
+      <footer class="canopy-footer">${wallPhotoCredit(photo,record)}<a href="conservatory/index.html" target="_blank" rel="noopener">温室布景出处</a>${navigation}</footer>
     </article>`;
   }
 
