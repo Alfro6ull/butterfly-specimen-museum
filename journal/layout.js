@@ -122,7 +122,7 @@
             <summary><span>野外图录</span><span>${photos.length} 张</span>${chevron}</summary>
             <div class="journal-field-photos">${photos.join("")}</div>
           </details>` : ""}
-          <a class="greenhouse-credit" href="conservatory/index.html" target="_blank" rel="noopener">温室布景出处</a>
+          <a class="greenhouse-credit" href="conservatory/index.html" target="_blank" rel="noopener">页角图版出处</a>
         </footer>
       </article>
     </div>`;

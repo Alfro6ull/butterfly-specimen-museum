@@ -24,11 +24,11 @@ body.journal-open[data-hall="journal"] .switch a.on::after { background:#c1cdab 
   color:var(--journal-ink);
   position:relative;
   overflow:clip;
-  padding:0 0 35px;
+  padding:clamp(12px,3vw,44px) 0 35px;
   background:
     repeating-linear-gradient(0deg,#f7f2e107 0 1px,transparent 1px 4px),
     repeating-linear-gradient(90deg,#363f3009 0 1px,transparent 1px 4px),
-    radial-gradient(ellipse at 50% 8%,#bcbcae 0,#a8ac9b 47%,#858e7d 100%);
+    radial-gradient(ellipse at 50% 8%,#ede6d7 0,#dcd7c6 60%,#c5c3b2 100%);
 }
 [data-hall="journal"] .journal-wall::before { opacity:.32 }
 [data-hall="journal"] .journal-wall::after { display:none }
