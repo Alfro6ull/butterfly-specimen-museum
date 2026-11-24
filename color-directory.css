@@ -1,0 +1,12 @@
+.color-directory { margin: 1rem 0 1.2rem; padding: 1rem; border: 1px solid color-mix(in srgb, currentColor 18%, transparent); border-radius: .65rem; }
+.color-directory h3 { margin: 0; font-size: 1rem; }
+.color-directory-note { margin: .35rem 0 .7rem; font-size: .82rem; opacity: .72; }
+.color-directory-options { display: flex; flex-wrap: wrap; gap: .4rem; }
+.color-directory-options button, .color-directory-reset, .clear-directory-filters { display: inline-flex; align-items: center; gap: .35rem; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); border-radius: 999px; padding: .35rem .65rem; color: inherit; background: transparent; cursor: pointer; font: inherit; font-size: .85rem; }
+.color-directory-options button[aria-pressed="true"] { background: color-mix(in srgb, currentColor 12%, transparent); border-color: currentColor; }
+.color-directory-options i { width: .85rem; height: .85rem; border-radius: 50%; background: var(--color-chip); box-shadow: inset 0 0 0 1px #0002; }
+.color-directory-reset { margin-top: .65rem; }
+.records a { position: relative; padding-left: 3.7rem; min-height: 3.3rem; }
+.color-directory-thumb { position: absolute; left: .4rem; top: 50%; width: 2.7rem; height: 2.7rem; transform: translateY(-50%); object-fit: contain; border-radius: .35rem; background: #f2eee6; }
+.directory-empty { padding: 1rem .5rem; text-align: center; }
+.directory-empty p { margin: .45rem 0 .85rem; opacity: .75; }

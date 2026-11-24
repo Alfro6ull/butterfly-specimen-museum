@@ -24,6 +24,7 @@
   let wallId = initial;
   let route;
   let search = "";
+  let colorSelection = new Set();
   let mobileDirectoryOpen = false;
   let renderVersion = 0;
   let initialRender = true;
@@ -724,6 +725,7 @@
     main.innerHTML = `<aside class="directory" aria-labelledby="directory-title">
       <h2 id="directory-title">标本目录</h2>
       <label class="searchbox">${searchIcon}<input type="search" aria-label="搜索学名、中文名或编号" placeholder="搜索学名、中文名或编号" value="${escape(search)}"></label>
+      <section class="color-directory" aria-label="按翅色筛选"></section>
       <details class="directory-disclosure" ${!narrow.matches || mobileDirectoryOpen || search ? "open" : ""}>
         <summary>目录 <span class="directory-count" aria-live="polite"></span></summary>
         <nav class="records" aria-label="标本目录"></nav>
@@ -758,6 +760,14 @@
       disclosure.open = true;
       directoryResults();
     });
+    const colorHost = main.querySelector(".color-directory");
+    if (window.MuseumColorDirectory) {
+      window.MuseumColorDirectory.mount(colorHost, colorSelection, next => {
+        colorSelection = next;
+        disclosure.open = true;
+        directoryResults();
+      });
+    }
     disclosure.addEventListener("toggle", () => {
       if (narrow.matches && disclosure.isConnected) mobileDirectoryOpen = disclosure.open;
     });
@@ -770,7 +780,9 @@
     const results = directory.filter(record => {
       const haystack = [record.name, record.latin, record.binomial, record.originalName, record.accession, record.id, record.family, record.familyZh, record.genus, record.museum]
         .filter(Boolean).join(" ").toLocaleLowerCase();
-      return searchTerms.every(term => haystack.includes(term));
+      const textMatch = searchTerms.every(term => haystack.includes(term));
+      const colorMatch = !colorSelection.size || Boolean(window.MuseumColorDirectory?.matchingPhoto(record, colorSelection));
+      return textMatch && colorMatch;
     });
     main.querySelector(".directory-count").textContent = `${results.length} 条`;
     list.innerHTML = results.length ? results.map(record => {
@@ -779,10 +791,25 @@
       const distinction = nameCounts.get(label) > 1
         ? [record.museum || record.institution, record.accession].filter(Boolean).join(" · ")
         : "";
-      return `<a href="${escape(fragment("book", record.id, null, wallId))}" ${current ? 'class="active" aria-current="page"' : ""}>
+      const match = window.MuseumColorDirectory?.matchingPhoto(record, colorSelection);
+      const photoIndex = match?.index ?? null;
+      return `<a href="${escape(fragment("book", record.id, photoIndex, wallId))}" ${current ? 'class="active" aria-current="page"' : ""}>
+        ${match ? `<img class="color-directory-thumb" src="${escape(match.photo.src)}" alt="" loading="lazy">` : ""}
         ${escape(label)}${searchTerms.length && record.name && latin(record) ? `<i>${escape(latin(record))}</i>` : ""}
         ${distinction ? `<small>${escape(distinction)}</small>` : ""}</a>`;
-    }).join("") : "<p>没有匹配的标本。</p>";
+    }).join("") : `<div class="directory-empty"><strong>暂时没有找到这样的蝴蝶</strong><p>可清除颜色条件，或换个名字、学名或编号搜索。</p><button type="button" class="clear-directory-filters">清除颜色与搜索</button></div>`;
+    const clear = list.querySelector(".clear-directory-filters");
+    clear?.addEventListener("click", () => {
+      search = "";
+      colorSelection = new Set();
+      const input = main.querySelector("input[type=search]");
+      if (input) input.value = "";
+      window.MuseumColorDirectory?.reset(main.querySelector(".color-directory"), colorSelection, next => {
+        colorSelection = next;
+        directoryResults();
+      });
+      directoryResults();
+    });
 
     if (keepCurrentVisible) {
       const current = list.querySelector(".active");
@@ -813,6 +840,10 @@
     }
     if (route.mode === "study") study();
     if (route.mode === "book") book();
+    window.MuseumBasket?.sync({
+      mode: route.mode, record: route.record,
+      href: fragment(route.mode === "plaque" ? "gallery" : route.mode, route.record.id, route.photoIndex)
+    });
 
     if (!initialRender && restoreFocus && route.mode !== "plaque") {
       let target;

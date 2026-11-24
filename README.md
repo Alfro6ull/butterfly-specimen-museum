@@ -1,6 +1,6 @@
 # 蝴蝶标本馆
 
-从真实馆藏标本的翅纹里找配色。点画框可以放大照片、取色和复制色值，点小牌可以查看标本资料、摄影署名、原始记录和图片许可。[进入展厅](https://alfro6ull.github.io/butterfly-specimen-museum/)
+浏览真实馆藏蝴蝶标本，按翅色发现标本，把喜欢的整件标本收进本机收藏篮。点画框可以放大照片、取色和复制色值，点小牌可以查看标本资料、摄影署名、原始记录和图片许可。[进入展厅](https://alfro6ull.github.io/butterfly-specimen-museum/) · [打开标本目录](https://alfro6ull.github.io/butterfly-specimen-museum/#book)
 
 展厅收录 305 件标本、357 张实拍照片。每张照片沿用来源记录标明的许可，展墙裁切和图像处理记录在对应展签中。[逐图出处与许可清单](credits.csv)
 

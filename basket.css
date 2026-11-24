@@ -1,0 +1,26 @@
+[data-specimen-basket] { --basket-ink: #27251f; --basket-paper: #f7f3e9; --basket-line: rgba(49, 43, 32, .2); color: var(--basket-ink); font: inherit; }
+.switch .basket-open,.basket-add {background:transparent;color:inherit;font:inherit;cursor:pointer}
+.switch .basket-open {border:0;border-inline-start:1px solid #85857566;padding:4px 0 4px 12px;font-size:13px;white-space:nowrap}
+.basket-add {display:inline-block;border:1px solid #88866f88;border-radius:3px;padding:5px 9px;margin:5px;font-size:12px;line-height:1.3}
+.basket-add:disabled {opacity:.7;cursor:default}
+.group>.basket-add {display:block;margin:4px auto}
+.basket-add:focus-visible,.basket-open:focus-visible,.specimen-basket-dialog :focus-visible {outline:2px solid #a8884d;outline-offset:2px}
+.specimen-basket-dialog { width: min(570px, calc(100% - 28px)); max-width: none; max-height: min(78vh, 760px); padding: 0; overflow: auto; border: 1px solid var(--basket-line); border-radius: 4px; background: var(--basket-paper); color: var(--basket-ink); box-shadow: 0 24px 80px #16130f42; }
+.specimen-basket-dialog::backdrop { background: #15130f9c; backdrop-filter: blur(3px); }
+.basket-sheet { padding: clamp(22px, 5vw, 38px); }
+.basket-sheet header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--basket-line); padding-bottom: 20px; }
+.basket-eyebrow { margin: 0 0 7px; color: #78705f; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+.basket-sheet h2 { margin: 0; font-family: Georgia, "Noto Serif SC", serif; font-size: clamp(25px, 5vw, 34px); font-weight: 500; }
+.basket-close { width: 38px; height: 38px; border: 1px solid var(--basket-line); border-radius: 50%; background: transparent; color: inherit; font: inherit; font-size: 25px; line-height: 1; cursor: pointer; }
+.basket-count { margin: 16px 0 6px; color: #77705f; font-size: 12px; }
+.basket-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.basket-list li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--basket-line); }
+.basket-specimen { display: flex; flex: 1; min-width: 0; align-items: center; gap: 13px; color: inherit; text-decoration: none; }
+.basket-thumb { display: grid; flex: 0 0 64px; width: 64px; height: 64px; place-items: center; overflow: hidden; background: #e9e4d7; }
+.basket-thumb img { width: 100%; height: 100%; object-fit: contain; }
+.basket-name { display: grid; gap: 4px; min-width: 0; font-family: Georgia, "Noto Serif SC", serif; font-size: 15px; }
+.basket-name i { overflow: hidden; color: #77705f; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.basket-return { margin-left: auto; color: #77705f; font: 11px/1.3 sans-serif; white-space: nowrap; }
+.basket-remove { flex: 0 0 auto; padding: 8px 4px 8px 8px; border: 0; background: transparent; color: #72624a; font: inherit; font-size: 12px; cursor: pointer; }
+.basket-empty { padding: 28px 4px; color: #77705f; font-family: Georgia, "Noto Serif SC", serif; line-height: 1.8; }
+@media(max-width:520px){.basket-return{display:none}.switch .basket-open{font-size:12px;padding-left:7px}.topbar .switch{gap:6px}}
