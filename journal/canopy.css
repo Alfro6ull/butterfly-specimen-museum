@@ -11,11 +11,11 @@ body.canopy-open .switch a.on::after { background:#c8d6b9 }
   padding:0 clamp(24px,6.5vw,110px);
 }
 .canopy-exhibit {overflow:hidden;background:#81948a}
-.canopy-fronds {position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#071b2366,transparent 20%,transparent 65%,#071b2594),url("../conservatory/rainforest.webp") center center / cover no-repeat}
-.canopy-fronds {filter:saturate(.42) contrast(.68) brightness(.9) blur(3px);inset:-12px;transform:translate(var(--far-x,0px),var(--far-y,0px))}
+.canopy-fronds {position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#071b2366,transparent 20%,transparent 65%,#071b2594),url("../conservatory/mist-grove.svg") center center / cover no-repeat}
+.canopy-fronds {inset:-12px;transform:translate(var(--far-x,0px),var(--far-y,0px))}
 .canopy-exhibit::before {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 52% 40%,#d9e5ce55,transparent 57%),linear-gradient(0deg,#1d3634a8,transparent 48%)}
-.canopy-understory {position:absolute;inset:-12px;z-index:-1;pointer-events:none;background:url("../conservatory/fern.webp") right -3vw center / auto 77% no-repeat;filter:saturate(.45) brightness(.58) blur(.6px);transform:translate(var(--mid-x,0px),var(--mid-y,0px))}
-.canopy-exhibit::after {content:"";position:absolute;inset:-14px;pointer-events:none;z-index:1;background:url("../conservatory/fern.webp") no-repeat left -8vw bottom -25%,url("../conservatory/palm.webp") no-repeat right -18vw bottom -44%;background-size:auto 81%,auto 87%;filter:brightness(.38) saturate(.55) blur(1.4px);transform:translate(var(--near-x,0px),var(--near-y,0px))}
+.canopy-understory {position:absolute;inset:-12px;z-index:-1;pointer-events:none;background:url("../conservatory/fern.webp") right -2vw bottom 9% / auto 63% no-repeat;filter:saturate(.45) brightness(.58) blur(.6px);transform:translate(var(--mid-x,0px),var(--mid-y,0px))}
+.canopy-exhibit::after {content:"";position:absolute;inset:-14px;pointer-events:none;z-index:1;background:url("../conservatory/fern.webp") no-repeat left -8vw bottom -25%,url("../conservatory/palm.webp") no-repeat right -18vw bottom -44%;background-size:auto 64%,auto 73%;filter:brightness(.38) saturate(.55) blur(1.4px);transform:translate(var(--near-x,0px),var(--near-y,0px))}
 .canopy-top,.canopy-bottom,.canopy-footer { position:relative;z-index:2 }
 .canopy-top {grid-row:1}.canopy-bottom {grid-row:3}.canopy-footer {grid-row:4}
 .canopy-top,.canopy-bottom,.canopy-footer { display:flex;align-items:center;justify-content:space-between;gap:18px }
@@ -31,12 +31,13 @@ body.canopy-open .switch a.on::after { background:#c8d6b9 }
   isolation:isolate;
 }
 .canopy-butterfly::before {
-  content:"";position:absolute;z-index:-1;pointer-events:none;width:165%;aspect-ratio:3/2;left:-56%;top:50%;
+  content:"";position:absolute;z-index:-1;pointer-events:none;width:106%;aspect-ratio:3/2;left:-17%;top:50%;
   transform:translateY(-42%) rotate(-5deg);
   background:url("../conservatory/rain-branch.webp") center / contain no-repeat;
   mask-image:linear-gradient(37deg,transparent 0%,#000 15%);
   filter:drop-shadow(0 4px 3px #182e2438);
 }
+.canopy-butterfly::after {content:"";position:absolute;z-index:-2;right:112%;top:91%;width:42vw;height:15vh;border-top:4px solid #486555;border-radius:0 95% 0 0;transform:rotate(-25deg);transform-origin:100% 0;opacity:.75;pointer-events:none}
 .canopy-butterfly img {width:60%;height:74%;object-fit:contain;transform:rotate(-9deg);filter:drop-shadow(-1px 2px 1px #23342982)}
 .canopy-bottom { align-items:flex-end;padding:12px 0 clamp(17px,3vh,29px);gap:24px }
 .canopy-caption { min-width:0;text-shadow:0 1px 7px #0a211a }
