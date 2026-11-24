@@ -29,7 +29,7 @@
   let initialRender = true;
   let highlightedId = "";
   const hallStorage = "butterfly-museum-hall";
-  const halls = new Map([["cabinet", "复古展厅"], ["optical", "暗光展厅"], ["journal", "自然手账"]]);
+  const halls = new Map([["cabinet", "复古展厅"], ["optical", "暗光展厅"], ["journal", "自然手账"], ["conservatory", "繁花温室"]]);
   const validHall = value => halls.has(value);
   let hall = "optical";
   let wallKey = "";
@@ -123,6 +123,7 @@
     bookLink.href = fragment("book", bookRecord.id, route.mode === "study" || route.mode === "plaque" ? route.photoIndex : null, wallId);
     const light = route.mode === "book";
     document.body.classList.toggle("light", light);
+    document.body.classList.toggle("canopy-open", hall === "conservatory" && !light);
     const inJournal = hall === "journal" && !light;
     document.body.classList.toggle("journal-open", inJournal);
     for (const [link, current] of [[galleryLink, !light], [bookLink, light]]) {
@@ -208,6 +209,36 @@
     </nav>`;
   }
 
+  function canopyPage(navigation) {
+    const record = records.get(wallId);
+    const index = selectedPhoto(record);
+    const photo = record.photos[index];
+    const study = escape(fragment("study", record.id, index));
+    const notes = escape(fragment("gallery", record.id, index).replace("hall=conservatory", "hall=journal"));
+    const cutouts = window.GREENHOUSE_CUTOUTS;
+    const colors = window.FIELD_SWATCHES[photo.key] || [];
+    const label = escape(name(record));
+    const scientific = latin(record);
+    const availableViews = record.photos.flatMap((item, at) => item.hasImage ? [at] : []);
+    const viewLinks = availableViews.length > 1 ? availableViews.map(at =>
+      `<a href="${escape(fragment("gallery", record.id, at))}" ${index === at ? 'aria-current="true"' : ""}>${escape(viewName(record.photos[at], at, record.photos.length))}</a>`).join("") : "";
+    return `<article class="canopy-exhibit" data-exhibit="${escape(record.id)}">
+      <span class="canopy-fronds" aria-hidden="true"></span><span class="flower-borders" aria-hidden="true"></span>
+      <header class="canopy-top"><span>繁花温室</span>${hallTools()}</header>
+      <a class="frame-link canopy-butterfly" href="${study}" aria-label="近观${label}">
+        ${cutouts[photo.key] ? `<img src="${escape(cutouts[photo.key])}" alt="${label} · 馆藏标本" draggable="false">` : imageMarkup(photo, record, true)}
+      </a>
+      <div class="canopy-bottom"><div class="canopy-caption">
+        <h1 tabindex="-1"${label === scientific ? ' lang="la"' : ''}>${label}</h1>
+        ${scientific && scientific !== name(record) ? `<i lang="la">${escape(scientific)}</i>` : ""}
+        <div class="canopy-actions"><button class="plaque" type="button" data-plaque="${escape(record.id)}" aria-label="查看${label}展签" aria-haspopup="dialog">标本展签</button><a href="${notes}">观察手账</a>${viewLinks}</div>
+      </div><div class="canopy-palette"><a href="${study}">近观取色 ↗</a>
+        <div>${colors.map(hex => `<button type="button" data-copy-hex="${hex}" style="--swatch:${hex}" aria-label="复制色值 ${hex}" title="${hex}"></button>`).join("")}</div>
+        <span role="status" data-journal-status></span></div></div>
+      <footer class="canopy-footer">${wallPhotoCredit(photo,record)}<a href="conservatory/index.html" target="_blank" rel="noopener">花房图版出处</a>${navigation}</footer>
+    </article>`;
+  }
+
   function journalPage(page, total, navigationHTML) {
     const record = records.get(wallId);
     const photoIndex = selectedPhoto(record);
@@ -237,14 +268,14 @@
     const items = gallery.slice(wallStart, wallStart + 3);
     const newKey = JSON.stringify([hall, single, pageIndex, highlightedId,
       ...items.map(id => [id, selectedPhoto(records.get(id))]), single ? wallId : ""]);
-    if (main.classList.contains("wall") && newKey === wallKey) return;
+    if ((main.classList.contains("wall") || main.classList.contains("canopy-wall")) && newKey === wallKey) return;
     const previousDialog = main.querySelector("dialog.placard[open]");
     previousDialog?.close();
     wallKey = newKey;
     const journal = hall === "journal";
     const navigation = wallNavigation(pageIndex + 1, pages, single);
-    main.className = journal ? "wall journal-wall" : "wall";
-    const contents = journal ? journalPage(pageIndex + 1, pages, navigation) : `<div class="roomhead">
+    main.className = hall === "conservatory" ? "canopy-wall" : journal ? "wall journal-wall" : "wall";
+    const contents = hall === "conservatory" ? canopyPage(navigation) : journal ? journalPage(pageIndex + 1, pages, navigation) : `<div class="roomhead">
         <div class="room-title"><h1 tabindex="-1">常设展厅</h1><div class="count">${gallery.length} 件标本</div></div>
         ${hallTools()}
       </div>
@@ -325,7 +356,7 @@
   }
 
   function exhibitControl(id, selector) {
-    if (hall === "journal") return main.querySelector("[data-exhibit]")?.querySelector(selector);
+    if (hall === "journal" || hall === "conservatory") return main.querySelector("[data-exhibit]")?.querySelector(selector);
     const pane = singleExhibit() ? ".gallery-single" : ".gallery-wide";
     const exhibit = [...main.querySelectorAll(`${pane} [data-exhibit]`)].find(item => item.dataset.exhibit === id);
     return exhibit?.querySelector(selector);
@@ -413,7 +444,7 @@
 
     main.className = "study";
     main.innerHTML = `<div>
-      <a class="return" href="${escape(galleryFragment())}">← ${hall === "journal" ? "返回自然手账" : "返回展墙"}</a>
+      <a class="return" href="${escape(galleryFragment())}">← ${hall === "journal" ? "返回自然手账" : hall === "conservatory" ? "返回繁花温室" : "返回展墙"}</a>
       ${frame}${views(record, photoIndex)}
     </div>
     <section>
